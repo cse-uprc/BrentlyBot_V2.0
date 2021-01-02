@@ -35,15 +35,25 @@ def index():
 # --------------------------------------------------
 
 
-@app.route("/print/", methods=['POST'])
-def start_recording():
+@app.route("/record/", methods=['POST'])
+def recording():
     status = parseString(request.get_data().decode())
     if status['recording']:
-        videoAudio.record_start()
+        # videoAudio.record_start()
         log_message("Recording ...")
     else:
-        videoAudio.record_stop()
+        # videoAudio.record_stop()
         log_message("Recording Stopped!")
+
+    return home_page()
+
+
+@app.route("/saveFile/", methods=['POST'])
+def save_file():
+    # Add code to acutally save audio and video files
+    data = parseString(request.get_data().decode())
+    log_message("File's Saved As: " + data['fileName'] +
+                ".avi & " + data['fileName'] + ".aud")
 
     return home_page()
 
