@@ -4,6 +4,23 @@
     <title>Record Bot</title>
     <meta charset="UTF-8" />
     <style>
+      .rec-button span:after {
+        content: "\00bb";
+        position: absolute;
+        opacity: 0;
+        top: 0;
+        right: -20px;
+        transition: 0.5s;
+      }
+
+      .rec-button:hover span {
+        padding-right: 25px;
+      }
+
+      .rec-button:hover span:after {
+        opacity: 1;
+        right: 0;
+      }
       .button {
         display: inline-block;
         border-radius: 4px;
@@ -16,7 +33,6 @@
         width: 250px;
         transition: all 0.5s;
         cursor: pointer;
-        margin: 5px;
       }
 
       .button span {
@@ -26,35 +42,105 @@
         transition: 0.5s;
       }
 
-      .button span:after {
-        content: "\00bb";
-        position: absolute;
-        opacity: 0;
+
+
+      .rec-container {
+        margin-top: 4.5rem;
+        padding: 10px;
+      }
+
+      .input {
+        border-radius: 10px;
+        height: 5px;
+        padding: 10px;
+      }
+      .fileName {
+        position: relative;
+        width: 200px;
+        text-align: left;
+        display: none;
+      }
+      body {
+        background-color: #edf1f7;
+      }
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+      .acm-nav {
+        background-color: #ffffff;
+        box-shadow: 0 0.5rem 1rem 0 rgba(44, 51, 73, 0.1);
+        overflow: hidden;
+        padding: 1.25rem;
+        height: 1.5rem;
+        position: fixed;
         top: 0;
-        right: -20px;
-        transition: 0.5s;
-      }
-
-      .button:hover span {
-        padding-right: 25px;
-      }
-
-      .button:hover span:after {
-        opacity: 1;
+        left: 0;
         right: 0;
+        z-index: 1040;
+      }
+      .acm-nav a {
+        color: #222b45;
+        text-align: center;
+        text-decoration: none;
+        font-size: 28px;
       }
 
-      .align-center {
+      .header-container {
+        display: flex;
+        align-items: center;
+        width: auto;
+      }
+      .label {
+        display: block;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .latest {
+        margin-bottom: 8px;
+        margin-top: 50px;
+      }
+      .save-button {
+        display: inline-block;
+        border-radius: 4px;
+        background-color: #4dcf4d;
+        border: none;
+        color: #ffffff;
         text-align: center;
+        font-size: 14px;
+        padding: 10px;
+        width: 50px;
+        margin-top: 10px;
+        transition: all 0.5s;
+        cursor: pointer;
+      }
+      .save-button:hover {
+        content: none !important;
+        background-color: #55f155;
       }
     </style>
   </head>
   <body>
-    <div class="align-center">
-      <h1>Discord Recording Bot</h1>
-      <button id="btnRecord" class="button" style="vertical-align: middle">
+    <div class="nav acm-nav">
+      <div class="header-container">
+          <a style="font-weight: 700;">Discord Recording Bot</a>
+      </div>
+    </div>
+    <div class="rec-container">
+      <button id="btnRecord" class="button rec-button" style="vertical-align: middle">
         <span id="buttonText">Start Recording</span>
       </button>
+
+      <div class="fileName" id="fileName">
+        <h2 class="latest">Latest Recording:</h3>
+        <label class="label">File Name</label>
+        <input class="input" id="fileNameInput"/>
+        <button style="float: left" id="btnFileSave" class="button save-button" style="vertical-align: middle">
+          <span id="buttonText">Save</span>
+        </button>
+        <p id="successSave" style="float: left; margin-left: 5px; display: none">File Saved!</p>
+      </div>
     </div>
   </body>
 </html>
@@ -65,9 +151,17 @@
 ></script>
 <script>
   $("#btnRecord").click(() => {
+    recording()
+  });
+
+  $("#btnFileSave").click(() => {
+    save_file()
+  });
+
+  function recording() {
     $.ajax({
       type: "POST",
-      url: "/print",
+      url: "/record",
       data: JSON.stringify({
         recording:
           document.querySelector("#buttonText").textContent ===
@@ -76,15 +170,41 @@
       success: () => {
         var value = document.querySelector("#buttonText").textContent;
         if (value === "Stop Recording") {
-          document.querySelector("#buttonText").textContent = "Start Recording";
-          document.getElementById("btnRecord").style.backgroundColor =
-            "#56f056";
+          recording_start();
         } else {
-          document.querySelector("#buttonText").textContent = "Stop Recording";
-          document.getElementById("btnRecord").style.backgroundColor =
-            "#f4511e";
+          recording_stop();
         }
       },
     });
-  });
+  }
+
+  function save_file() {
+    $.ajax({
+      type: "POST",
+      url: "/saveFile",
+      data: JSON.stringify({
+        fileName: document.getElementById("fileNameInput").value
+      }),
+      success: () => {
+        document.getElementById("successSave").style.display = "block";
+      },
+    });
+  }
+
+  function recording_start() {
+    
+
+    document.querySelector("#buttonText").textContent = "Start Recording";
+    document.getElementById("btnRecord").style.backgroundColor = "#56f056";
+    document.getElementById("fileName").style.display = "block";
+  }
+
+  function recording_stop() {
+    document.getElementById("successSave").style.display = "none";
+    document.getElementById("fileName").style.display = "none";
+    document.getElementById("fileNameInput").value = "";
+
+    document.querySelector("#buttonText").textContent = "Stop Recording";
+    document.getElementById("btnRecord").style.backgroundColor = "#f4511e";
+  }
 </script>
