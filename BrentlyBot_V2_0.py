@@ -21,12 +21,11 @@ async def on_ready():
     print(client.user.id)
     print("------")
 
+
 @client.event
 async def on_message(message):
-
-# Take a screenshot
+    # Take a screenshot
     if message.content.upper().startswith('!SCREENSHOT'):
-        
         await message.channel.send('Your face!')
 
         myScreenshot = pyautogui.screenshot()
