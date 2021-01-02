@@ -10,7 +10,20 @@
                 "END": "12:00"
             }
         },
-        "SAMBUTLER1017#8058": {}
+        "SAMBUTLER1017#8058": {
+            "WEDNESDAY": {
+                "START": "10:00",
+                "END": "11:00"
+            },
+            "THURSDAY": {
+                "START": "10:00",
+                "END": "11:00"
+            },
+            "FRIDAY": {
+                "START": "10:00",
+                "END": "11:00"
+            }
+        }
     },
     "ADMINS": [
         "sambutler1017#8058",
