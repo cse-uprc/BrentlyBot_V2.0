@@ -4,12 +4,14 @@ import random
 import json
 import sys
 import pyautogui
+from Util.UIService import serve_UI, log_message
 
-client = commands.Bot(command_prefix = "!")
+client = commands.Bot(command_prefix="!")
 
 with open("keys.json") as json_file:
     data = json.load(json_file)
     TOKEN = data["discordKey"]
+
 
 @client.event
 async def on_ready():
@@ -32,4 +34,7 @@ async def on_message(message):
 
         await message.channel.send(file=discord.File('screencapture.png'))
 
-client.run(TOKEN)
+    log_message("Logged in as: {} - {}".format(client.user.name, client.user.id))
+    log_message("Bot Comming online ...")
+    # client.run(TOKEN)
+serve_UI()
