@@ -1,0 +1,28 @@
+{
+    "TEACHERS": {
+        "JOSUEVANDYKE#7693": {
+            "WEDNESDAY": {
+                "START": "13:00",
+                "END": "15:00"
+            },
+            "FRIDAY": {
+                "START": "10:00",
+                "END": "12:00"
+            }
+        },
+        "TESTUSER#8058": {
+            "THURSDAY": {
+                "START": "10:00",
+                "END": "11:00"
+            }
+        }
+    },
+    "ADMINS": [
+        "sambutler1017#8058",
+        "JosueVanDyke#7693",
+        "Mark Zuckerberg#6770",
+        "llengel#3201",
+        "NewerCoke#4342",
+        "ienjoyeggs#8869"
+    ]
+}

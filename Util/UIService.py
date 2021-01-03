@@ -39,10 +39,10 @@ def index():
 def recording():
     status = parseString(request.get_data().decode())
     if status['recording']:
-        # videoAudio.record_start()
+        videoAudio.record_start()
         log_message("Recording ...")
     else:
-        # videoAudio.record_stop()
+        videoAudio.record_stop()
         log_message("Recording Stopped!")
 
     return home_page()
