@@ -17,12 +17,10 @@ async def on_ready():
     log_message("Logged in as: {} - {}".format(client.user.name, client.user.id))
     log_message("Bot online")
 
-
 @client.command()
 async def screenshot(message, *args):
     await Screenshot.bot_screenshot(message, args)
-
-
+   
 @client.command()
 async def officeHours(message, *args):
     await OfficeHours.bot_officeHours(message, args)
