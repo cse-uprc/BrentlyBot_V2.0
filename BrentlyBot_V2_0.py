@@ -25,7 +25,6 @@ async def screenshot(message, *args):
 
 @client.command()
 async def officeHours(message, *args):
-    print(message.author)
     await OfficeHours.bot_officeHours(message, args)
 
 client.run(TOKEN)

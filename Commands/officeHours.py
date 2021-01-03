@@ -21,15 +21,17 @@ async def bot_officeHours(message, *args):
 
     file = open("officeHours.json", "r")
     data = json.load(file)
-    methods = {"-ADD": office_hours_add,
-               "-EDIT": office_hours_edit,
-               "-DELETE": office_hours_delete,
-               "-LIST": office_hours_list
+    methods = {"-ADD": {"function": office_hours_add, "permission": "STRICT"},
+               "-EDIT": {"function": office_hours_edit, "permission": "STRICT"},
+               "-DELETE": {"function": office_hours_delete, "permission": "STRICT"},
+               "-LIST": {"function": office_hours_list, "permission": "ALL"}
                }
 
-    if(is_teacher(data, messageUser)):
+    if(methods[params[0]]["permission"] != "STRICT"):
+        await methods[params[0]]["function"](data, params, messageUser, message)
+    elif(is_teacher(data, messageUser)):
         try:
-            await methods[params[0]](data, params, messageUser, message)
+            await methods[params[0]]["function"](data, params, messageUser, message)
         except:
             log_message("{} is not a valid command".format(params[0]))
     elif is_admin(data, messageUser):
@@ -116,7 +118,7 @@ async def office_hours_edit(data, params, user, message):
 
     log_message("Process Complete!")
 
-    embedVar = discord.Embed(title="Office Hours Updated", color=0x00ff00)
+    embedVar = discord.Embed(title="Office Hours Updated", color=0xFFF300)
     embedVar.add_field(
         name=params[1], value=get_time(params[2]) + " - " + get_time(params[3]), inline=False)
     await message.channel.send(embed=embedVar)
@@ -142,8 +144,8 @@ async def office_hours_delete(data, params, user, message):
 
     log_message("Process Complete!")
 
-    embedVar = discord.Embed(title="Office Hours Removed", color=0x00ff00)
-    embedVar.add_field(name=params[1], value="-", inline=False)
+    embedVar = discord.Embed(
+        title="Removed " + params[1] + " Office Hours", color=0xFF0000)
     await message.channel.send(embed=embedVar)
 
 # --------------------------------------------------
@@ -161,14 +163,31 @@ async def office_hours_delete(data, params, user, message):
 async def office_hours_list(data, params, user, message):
     log_message("Process List Office Hours ...")
 
-    teacher = data['TEACHERS'][user.upper()]
-
+    stringValue = ""
+    embedVar = ""
+    if(is_teacher(data, user)):
+        embedVar = discord.Embed(title="Office Hours", color=0x00B2FF)
+        teacher = data['TEACHERS'][user.upper()]
+        for key in teacher:
+            embedVar.add_field(
+                name=key, value=get_time(teacher[key]["START"]) + " - " + get_time(teacher[key]["END"]), inline=False)
+    elif(is_admin(data, user)):
+        embedVar = discord.Embed(title="Office Hours", color=0x00B2FF)
+        for v in data["TEACHERS"]:
+            stringValue = ""
+            for key in data["TEACHERS"][v]:
+                userTeacher = data["TEACHERS"][v]
+                stringValue += key + ": " + get_time(userTeacher[key]["START"]) + \
+                    " - " + get_time(userTeacher[key]["END"]) + "\n"
+            embedVar.add_field(name=v, value=stringValue, inline=False)
+    else:
+        embedVar = discord.Embed(
+            title="Office Hours for " + params[1], color=0x00B2FF)
+        teacher = data['TEACHERS'][params[1]]
+        for key in teacher:
+            embedVar.add_field(
+                name=key, value=get_time(teacher[key]["START"]) + " - " + get_time(teacher[key]["END"]), inline=False)
     log_message("Process Complete!")
-
-    embedVar = discord.Embed(title="Office Hours Removed", color=0x00ff00)
-    for key in teacher:
-        embedVar.add_field(
-            name=key, value=teacher[key]["START"] + " - " + teacher[key]["END"], inline=False)
     await message.channel.send(embed=embedVar)
 
 # --------------------------------------------------
